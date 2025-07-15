@@ -1,56 +1,48 @@
 export const useStageAccess = () => {
-  const supabase = useSupabaseClient()
-  const user = useSupabaseUser()
-  
-  const checkAccess = async () => {
-    if (!user.value) return false
-    
-    try {
-      const { data, error } = await supabase
-        .from('participants')
-        .select('stage_access')
-        .eq('user_id', user.value.id)
-        .single()
-      
-      if (error && error.code !== 'PGRST116') {
-        console.error('Error checking stage access:', error)
-        return false
-      }
-      
-      return data?.stage_access || false
-    } catch (error) {
-      console.error('Error in checkAccess:', error)
-      return false
-    }
-  }
+  const participantsStore = useParticipantsStore()
+  const router = useRouter()
+  const slotsFull = computed(() => participantsStore.slotsFull)
 
-  const requestAccess = async () => {
-    if (!user.value) return false
-    
-    try {
-      const { error } = await supabase
-        .from('participants')
-        .upsert({
-          user_id: user.value.id,
-          email: user.value.email,
-          stage_access_requested: true,
-          created_at: new Date().toISOString()
-        })
-      
-      if (error) {
-        console.error('Error requesting access:', error)
-        return false
-      }
-      
-      return true
-    } catch (error) {
-      console.error('Error in requestAccess:', error)
-      return false
+const startPayment = () => {
+  return new Promise((resolve) => {
+    if (typeof window.Yoco === 'undefined') {
+      console.error('Yoco SDK still not ready. Try again in a sec.')
+      resolve(false)
+      return
     }
+
+    const yoco = new window.YocoSDK({
+      publicKey: 'pk_test_ea9110576BW41BaC8414'
+    })
+
+    yoco.showPopup({
+      amountInCents: 5000,
+      currency: 'ZAR',
+      name: 'Portrait Competition Slot'
+    }, async (result) => {
+      if (result.error) {
+        console.error('Payment error:', result.error.message)
+        resolve(false)
+      } else {
+        console.log('Payment success, token:', result.id)
+        resolve(true)
+      }
+    })
+  })
+}
+
+
+  const enterStage = async () => {
+    if (slotsFull.value) return
+
+    const paid = await startPayment()
+    if (!paid) return
+
+    await participantsStore.claimSlot()
+    router.push('/stage')
   }
 
   return {
-    checkAccess,
-    requestAccess
+    enterStage
   }
 }
