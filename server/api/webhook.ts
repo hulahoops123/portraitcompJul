@@ -9,16 +9,19 @@ export default defineEventHandler(async (event) => {
   }
 
   // 2. Handle header (type-safe)
-  const yocoSignatureHeader = event.node.req.headers['x-yoco-signature']
-  const yocoSignature = Array.isArray(yocoSignatureHeader) 
-    ? yocoSignatureHeader[0] // Take first if array
-    : yocoSignatureHeader
+  // Debug: Log headers to confirm the correct one
+  console.log("Incoming headers:", event.node.req.headers)
 
-  if (!yocoSignature || typeof yocoSignature !== 'string') {
-    console.warn("❌ Missing or invalid signature header")
+  // Try common Yoco signature header variants
+  const yocoSignature = 
+    event.node.req.headers['x-yoco-signature'] || 
+    event.node.req.headers['yoco-signature'] ||
+    event.node.req.headers['x-webhook-signature']
+
+  if (!yocoSignature) {
+    console.warn("❌ No signature found in headers. Headers received:", event.node.req.headers)
     return { error: "Unauthorized" }
   }
-
   // 3. Verify secret
   const secret = process.env.YOCO_WEBHOOK_SECRET
   if (!secret) {
