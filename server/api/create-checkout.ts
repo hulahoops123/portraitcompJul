@@ -1,6 +1,6 @@
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
-  const amount = body?.amount || 5000  // e.g. R50.00 in cents
+  const amount = body?.amount || 5000
 
   try {
     const response = await $fetch('https://payments.yoco.com/api/checkouts', {
@@ -17,9 +17,13 @@ export default defineEventHandler(async (event) => {
       })
     })
 
+    console.log('✅ Yoco response:', response)
     return response
   } catch (err) {
-    console.error('Error creating checkout:', err)
+    console.error('❌ Error creating checkout:', err)
+    if (err.response?._data) {
+      console.error('❌ Full Yoco error response:', err.response._data)
+    }
     return { error: 'Failed to create checkout' }
   }
 })
