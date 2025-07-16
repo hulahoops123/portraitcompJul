@@ -39,6 +39,16 @@
         Show Error
       </button>
     </div>
+
+    <div class="mt-6 p-4 border rounded bg-yellow-50">
+      <h3 class="font-bold mb-2">🛠 Dev Inline Toast Test</h3>
+      <button class="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700"
+        @click="() => { console.log('🛠 Inline test clicked'); toast.success({ title: 'Dev Test', message: 'Inline toast works!' }) }">
+        Run Inline Dev Test
+      </button>
+    </div>
+
+
     <div class="text-center">
       <button @click="enterStage" :disabled="slotsFull"
         class="bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700 disabled:opacity-50">
@@ -50,17 +60,15 @@
 </template>
 
 <script setup>
-import { useToast } from "vue-toastification"
-
 definePageMeta({
   middleware: 'auth'
 })
 
+const toast = useToast()
+
 const supabase = useSupabaseClient()
 const user = useSupabaseUser()
 const router = useRouter()
-
-const toast = useToast()
 
 const participantsStore = useParticipantsStore()
 
@@ -69,7 +77,10 @@ onMounted(async () => {
 
   if (localStorage.getItem('paymentAttempted') === 'true') {
     localStorage.removeItem('paymentAttempted')
-    toast.success("🎉 Congratulations! You're on stage. A receipt has been emailed to you. Good luck!")
+    toast.success({
+      title: "You're on stage!",
+      message: "A receipt has been emailed to you. Good luck!"
+    })
   }
 })
 
@@ -105,21 +116,28 @@ const waitingParticipantsWithSelf = computed(() => {
 
 const showSuccess = () => {
   console.log("✅ Clicked success toast")
-  toast.success("🎉 Success toast works!")
+  toast.success({
+    title: "Success!",
+    message: "Success toast works!"
+  })
 }
 
 const showError = () => {
   console.log("❌ Clicked error toast")
-  toast.error("🚨 Error toast works!")
+  toast.error({
+    title: "Error",
+    message: "Error toast works!"
+  })
 }
 
-// const ENTRY_FEE_CENTS = 7500  // R75.00
 const ENTRY_FEE_CENTS = 500  // dev_test
-
 
 const enterStage = async () => {
   if (slotsFull.value) {
-    toast.error("Sorry, all slots are currently full.")
+    toast.error({
+      title: "Stage Full",
+      message: "Sorry, all slots are currently full."
+    })
     return
   }
 
@@ -132,7 +150,10 @@ const enterStage = async () => {
     console.log('✅ Checkout response:', response)
 
     if (!response?.redirectUrl) {
-      toast.error("Could not get payment link.")
+      toast.error({
+        title: "Payment Failed",
+        message: "Could not get payment link."
+      })
       return
     }
 
@@ -140,10 +161,12 @@ const enterStage = async () => {
     window.location.href = response.redirectUrl
   } catch (err) {
     console.error('Checkout error:', err)
-    toast.error("Something went wrong starting your payment.")
+    toast.error({
+      title: "Something went wrong",
+      message: "Could not start your payment."
+    })
   }
 }
-
 
 const signOut = async () => {
   await supabase.auth.signOut()
