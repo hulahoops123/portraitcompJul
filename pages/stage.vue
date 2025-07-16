@@ -113,33 +113,37 @@ const showError = () => {
   toast.error("🚨 Error toast works!")
 }
 
+// const ENTRY_FEE_CENTS = 7500  // R75.00
+const ENTRY_FEE_CENTS = 500  // dev_test
+
+
 const enterStage = async () => {
   if (slotsFull.value) {
     toast.error("Sorry, all slots are currently full.")
     return
   }
 
-  const { data, error } = await useFetch('/api/create-checkout', {
-    method: 'POST',
-    body: {
-      amount: 5000
+  try {
+    const response = await $fetch('/api/create-checkout', {
+      method: 'POST',
+      body: { amount: ENTRY_FEE_CENTS }
+    })
+
+    console.log('✅ Checkout response:', response)
+
+    if (!response?.redirectUrl) {
+      toast.error("Could not get payment link.")
+      return
     }
-  })
 
-  if (error.value) {
-    console.error('Checkout error:', error.value)
-    toast.error("Something went wrong starting your payment.")
-    return
-  }
-
-  const redirectUrl = data.value?.redirectUrl
-  if (redirectUrl) {
     localStorage.setItem('paymentAttempted', 'true')
-    window.location.href = redirectUrl
-  } else {
-    toast.error("Could not get payment link.")
+    window.location.href = response.redirectUrl
+  } catch (err) {
+    console.error('Checkout error:', err)
+    toast.error("Something went wrong starting your payment.")
   }
 }
+
 
 const signOut = async () => {
   await supabase.auth.signOut()

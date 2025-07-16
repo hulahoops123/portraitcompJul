@@ -1,6 +1,9 @@
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
-  const amount = body?.amount || 5000
+if (!body?.amount) {
+  throw createError({ statusCode: 400, message: 'Amount is required.' })
+}
+const amount = body.amount
 
   try {
     const response = await $fetch('https://payments.yoco.com/api/checkouts', {
