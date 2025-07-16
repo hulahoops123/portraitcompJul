@@ -30,25 +30,6 @@
         </div>
       </div>
     </div>
-    <div class="p-4 border rounded-lg mt-6 bg-gray-50">
-      <h3 class="font-bold mb-2">🚀 Developer Toast Test</h3>
-      <button @click="showSuccess" class="mr-2 px-4 py-2 bg-green-500 text-white rounded">
-        Show Success
-      </button>
-      <button @click="showError" class="px-4 py-2 bg-red-500 text-white rounded">
-        Show Error
-      </button>
-    </div>
-
-    <div class="mt-6 p-4 border rounded bg-yellow-50">
-      <h3 class="font-bold mb-2">🛠 Dev Inline Toast Test</h3>
-      <button class="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700"
-        @click="() => { console.log('🛠 Inline test clicked'); toast.success({ title: 'Dev Test', message: 'Inline toast works!' }) }">
-        Run Inline Dev Test
-      </button>
-    </div>
-
-
     <div class="text-center">
       <button @click="enterStage" :disabled="slotsFull"
         class="bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700 disabled:opacity-50">
@@ -130,7 +111,7 @@ const showError = () => {
   })
 }
 
-const ENTRY_FEE_CENTS = 500  // dev_test
+const ENTRY_FEE_CENTS = 200  // dev_test
 
 const enterStage = async () => {
   if (slotsFull.value) {
