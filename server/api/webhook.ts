@@ -8,58 +8,55 @@ export default defineEventHandler(async (event) => {
     return { error: "Invalid request" }
   }
 
-  // 2. Handle header (type-safe)
-  // Debug: Log headers to confirm the correct one
-  console.log("Incoming headers:", event.node.req.headers)
+  // 2. Extract Svix-style headers (Yoco uses these!)
+  const headers = event.node.req.headers
+  const webhookId = headers['webhook-id']
+  const webhookTimestamp = headers['webhook-timestamp']
+  const webhookSignature = headers['webhook-signature']
 
-  // Try common Yoco signature header variants
-  const yocoSignature = 
-    event.node.req.headers['x-yoco-signature'] || 
-    event.node.req.headers['yoco-signature'] ||
-    event.node.req.headers['x-webhook-signature']
-
-  if (!yocoSignature) {
-    console.warn("❌ No signature found in headers. Headers received:", event.node.req.headers)
+  if (!webhookId || !webhookTimestamp || !webhookSignature) {
+    console.warn("❌ Missing Svix headers (Yoco webhook)")
     return { error: "Unauthorized" }
   }
-  // 3. Verify secret
-  const secret = process.env.YOCO_WEBHOOK_SECRET
+
+  // 3. Get secret (from .env, same as in Yoco dashboard)
+  const secret = process.env.YOCO_WEBHOOK_SECRET // e.g., 'whsec_...'
   if (!secret) {
     console.error("❌ Missing webhook secret")
     return { error: "Server error" }
   }
 
-  // 4. Compute signature
-  const computedSignature = crypto
-    .createHmac('sha256', secret)
-    .update(body)
-    .digest('hex')
+  // 4. Reconstruct signed content (Yoco/Svix format)
+  const signedContent = `${webhookId}.${webhookTimestamp}.${body}`
 
-  // 5. SECURE COMPARISON (fixed)
-  try {
-    const computedBuffer = Buffer.from(computedSignature, 'hex')
-    const yocoBuffer = Buffer.from(yocoSignature, 'hex') // or 'base64' if Yoco uses that
-    
-    if (!crypto.timingSafeEqual(computedBuffer, yocoBuffer)) {
-      console.warn("❌ Webhook signature mismatch")
-      return { error: "Invalid signature" }
-    }
-  } catch (e) {
-    console.error("❌ Signature verification failed:", e)
-    return { error: "Invalid signature format" }
+  // 5. Compute expected signature (decode secret first)
+  const secretBytes = Buffer.from(secret.split('_')[1], 'base64') // Extract after 'whsec_'
+  const expectedSignature = crypto
+    .createHmac('sha256', secretBytes)
+    .update(signedContent)
+    .digest('base64')
+
+  // 6. Compare signatures (Svix format: "v1,{signature}")
+  const receivedSignature = webhookSignature.split(',')[1]
+  if (!crypto.timingSafeEqual(
+    Buffer.from(expectedSignature, 'base64'),
+    Buffer.from(receivedSignature, 'base64')
+  )) {
+    console.warn("❌ Webhook signature mismatch")
+    return { error: "Invalid signature" }
   }
 
-  // 6. Parse JSON
+  // 7. If we get here, the webhook is valid!
   try {
     const parsedBody = JSON.parse(body)
-    console.log("📡 Valid webhook:", parsedBody.type)
+    console.log("📡 Valid Yoco webhook:", parsedBody.type)
 
     if (parsedBody.type === 'payment.succeeded') {
       console.log("✅ Payment succeeded:", parsedBody.id)
-      // await updateSupabase(parsedBody) // Your logic here
+      // Handle payment (e.g., update database)
     }
     
-    return { received: true }
+    return { received: true } // 200 OK
 
   } catch (e) {
     console.error("❌ JSON parse error:", e)
