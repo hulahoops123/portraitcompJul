@@ -105,7 +105,7 @@ const passwordInput = ref('')
 const passwordError = ref(false)
 
 const checkPassword = () => {
-  if (passwordInput.value.trim().toLowerCase() === 'hula') {
+  if (passwordInput.value.trim().toLowerCase() === 'ultramarine') {
     passwordError.value = false
     curtainClicked.value = true
     setTimeout(() => {

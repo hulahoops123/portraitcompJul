@@ -16,6 +16,7 @@
       <!-- Header -->
       <div class="flex justify-between items-center mb-8">
         <h1 class="text-3xl font-bold text-gray-800">{{ competitionTitle }}</h1>
+        <h4 class="text-3xl font-bold text-gray-800">{{ competitionTag }}</h4>
         <button @click="signOut" class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700">
           Logout
         </button>
@@ -51,31 +52,38 @@
       </div>
 
       <!-- Competition Easels -->
-      <div class="grid grid-cols-4 gap-6 mb-12">
-        <div
-          v-for="i in maxCompetitors"
-          :key="i"
-          class="flex flex-col items-center relative group"
-        >
-          <div class="w-24 h-24 border-4 rounded-lg shadow-lg bg-white overflow-hidden z-10">
-            <img
-              v-if="entered[i - 1]"
-              :src="entered[i - 1].profile_pic"
-              alt="Contestant"
-              class="w-full h-full object-cover"
-            />
-            <div
-              v-else
-              class="w-full h-full flex items-center justify-center text-gray-300 text-sm"
-            >
-              Empty
-            </div>
-          </div>
-          <!-- Easel Stand -->
-          <div class="w-1 h-8 bg-gray-700 mt-1"></div>
-          <div class="w-10 h-1 bg-gray-700 mt-1"></div>
-        </div>
+<div class="grid grid-cols-4 gap-6 mb-12">
+  <div
+    v-for="i in maxCompetitors"
+    :key="i"
+    class="flex flex-col items-center relative group"
+  >
+    <!-- Easel Frame -->
+    <div class="w-24 h-24 border-4 rounded-lg shadow-lg bg-white overflow-hidden z-10">
+      <img
+        v-if="entered[i - 1]"
+        :src="entered[i - 1].profile_pic"
+        alt="Contestant"
+        class="w-full h-full object-cover"
+      />
+      <div
+        v-else
+        class="w-full h-full flex items-center justify-center text-gray-300 text-sm"
+      >
+        Empty
       </div>
+    </div>
+
+    <!-- Easel Stand -->
+    <div class="w-1 h-8 bg-gray-700 mt-1"></div>
+    <div class="w-10 h-1 bg-gray-700 mt-1"></div>
+
+    <!-- Contestant Name -->
+    <div v-if="entered[i - 1]" class="mt-2 text-sm text-gray-700 text-center truncate max-w-[6rem]">
+      {{ entered[i - 1].name }}
+    </div>
+  </div>
+</div>
 
       <!-- Waiting Competitors -->
       <h2 class="text-xl font-semibold mb-4 text-gray-600 text-center">Still Deciding</h2>
@@ -105,9 +113,10 @@ definePageMeta({
 })
 
 // Configuration - customize these per competition
-const competitionTitle = ref('Annual Art Competition') // Set your competition title
+const competitionTitle = ref('Beyond the Frame') // Set your competition title
+const competitionTag = ref('A portrait series without boundaries') // Set your competition tag
 const maxCompetitors = ref(8) // Set maximum competitors
-const entryFeeCents = ref(200) // Set entry fee in cents
+const entryFeeCents = ref(20000) // Set entry fee in cents
 
 // Core dependencies
 const toast = useToast()
