@@ -1,4 +1,10 @@
 import crypto from 'crypto'
+import { createClient } from '@supabase/supabase-js'
+
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_KEY
+)
 
 export default defineEventHandler(async (event) => {
   // 1. Get raw body
@@ -54,7 +60,7 @@ export default defineEventHandler(async (event) => {
 if (parsedBody.type === 'payment.succeeded') {
   console.log("✅ Payment succeeded:", parsedBody.id)
 
-  const supabase = useSupabaseClient()
+  // const supabase = useSupabaseClient()
   const userId = parsedBody?.metadata?.userId
 
   if (!userId) {
