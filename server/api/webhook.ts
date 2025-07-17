@@ -60,7 +60,8 @@ export default defineEventHandler(async (event) => {
     if (parsedBody.type === 'payment.succeeded') {
       console.log("✅ Payment succeeded:", parsedBody.id)
 
-      const checkoutId = parsedBody.id
+      const checkoutId = parsedBody.data?.object?.metadata?.checkoutId
+
 
       // Find the user whose status is 'pending:{checkoutId}'
       const { data: pending, error: lookupError } = await supabase
