@@ -168,7 +168,17 @@ const enterCompetition = async () => {
       })
       return
     }
+    // ✅ INSERT THIS HERE: mark user as pending
+    await supabase
+      .from('competition_participants')
+      .upsert({
+        user_id: user.value.id,
+        name: user.value.user_metadata.full_name,
+        profile_pic: user.value.user_metadata.avatar_url,
+        status: `pending:${response.id}`
+      }, { onConflict: ['user_id'] })
 
+    //redirect to yoco
     window.location.href = response.redirectUrl
 
   } catch (err) {

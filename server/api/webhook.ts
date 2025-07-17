@@ -57,44 +57,37 @@ export default defineEventHandler(async (event) => {
     const parsedBody = JSON.parse(body)
     console.log("📡 Valid Yoco webhook:", parsedBody.type)
 
-if (parsedBody.type === 'payment.succeeded') {
-  console.log("✅ Payment succeeded:", parsedBody.id)
+    if (parsedBody.type === 'payment.succeeded') {
+      console.log("✅ Payment succeeded:", parsedBody.id)
 
-  // const supabase = useSupabaseClient()
-  const userId = parsedBody?.metadata?.userId
+      const checkoutId = parsedBody.id
 
-  if (!userId) {
-    console.error("❌ No userId found in webhook metadata")
-    return { error: "Missing user info" }
-  }
+      // Find the user whose status is 'pending:{checkoutId}'
+      const { data: pending } = await supabase
+        .from('competition_participants')
+        .select('*')
+        .like('status', `pending:${checkoutId}`)
+        .single()
 
-  try {
-    // Step 1: Remove user from waiting
-    await supabase
-      .from('competition_participants')
-      .delete()
-      .match({ user_id: userId, status: 'waiting' })
+      if (!pending) {
+        console.error("❌ No user found with matching pending status")
+        return { error: "No match for checkout ID" }
+      }
 
-    // Step 2: Add user to entered
-    const { error: insertError } = await supabase
-      .from('competition_participants')
-      .insert({
-        user_id: userId,
-        name: parsedBody.metadata.name,
-        profile_pic: parsedBody.metadata.profile_pic,
-        status: 'entered'
-      })
+      // Update user to 'entered'
+      const { error: updateError } = await supabase
+        .from('competition_participants')
+        .update({ status: 'entered' })
+        .eq('user_id', pending.user_id)
 
-    if (insertError) throw insertError
+      if (updateError) {
+        console.error("❌ Failed to update to entered:", updateError)
+        return { error: "Update error" }
+      }
 
-    console.log(`✅ User ${userId} marked as 'entered'`)
-  } catch (err) {
-    console.error("❌ Failed to update participant status:", err)
-    return { error: "Database update failed" }
-  }
-}
+      console.log("✅ User entered:", pending.user_id)
+    }
 
-    
     return { received: true } // 200 OK
 
   } catch (e) {
