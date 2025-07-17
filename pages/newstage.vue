@@ -37,6 +37,8 @@
         </div>
       </div>
 
+      <button @click="testAdd">changestatustopending</button>
+
     </div>
 
   </div>
@@ -190,6 +192,17 @@ const signOut = async () => {
 
   await supabase.auth.signOut()
   router.push('/')
+}
+
+const testAdd= async () =>{
+      await supabase
+      .from('competition_participants')
+      .upsert({
+        user_id: user.value.id,
+        name: user.value.user_metadata.full_name,
+        profile_pic: user.value.user_metadata.avatar_url,
+        status: `pending:test`
+      }, { onConflict: ['user_id'] })
 }
 
 </script>
