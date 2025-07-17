@@ -51,41 +51,43 @@ export default defineEventHandler(async (event) => {
     const parsedBody = JSON.parse(body)
     console.log("📡 Valid Yoco webhook:", parsedBody.type)
 
-    if (parsedBody.type === 'payment.succeeded') {
-      console.log("✅ Payment succeeded:", parsedBody.id)
-      
-      // Handle payment
-      const supabase = useSupabaseClient()
-      const { data: { user } } = await supabase.auth.getUser()
-      
-      if (!user) {
-        console.warn("❌ No user associated with payment")
-        return { error: "User not found" }
-      }
+if (parsedBody.type === 'payment.succeeded') {
+  console.log("✅ Payment succeeded:", parsedBody.id)
 
-      // Extract metadata from payment (assuming you stored user/competition IDs in metadata)
-      const metadata = parsedBody.data.metadata || {}
-      const userId = metadata.userId || user.id
-      const competitionId = metadata.competitionId || 'default'
+  const supabase = useSupabaseClient()
+  const userId = parsedBody?.metadata?.userId
 
-      // Update competition status in database
-      const { error } = await supabase
-        .from('competitions')
-        .update({ 
-          status: 'entered',
-          payment_status: 'paid',
-          updated_at: new Date().toISOString()
-        })
-        .eq('user_id', userId)
-        .eq('competition_id', competitionId)
+  if (!userId) {
+    console.error("❌ No userId found in webhook metadata")
+    return { error: "Missing user info" }
+  }
 
-      if (error) {
-        console.error("❌ Database update failed:", error)
-        return { error: "Failed to update competition status" }
-      }
+  try {
+    // Step 1: Remove user from waiting
+    await supabase
+      .from('competition_participants')
+      .delete()
+      .match({ user_id: userId, status: 'waiting' })
 
-      console.log("✔️ User successfully entered into competition:", userId)
-    }
+    // Step 2: Add user to entered
+    const { error: insertError } = await supabase
+      .from('competition_participants')
+      .insert({
+        user_id: userId,
+        name: parsedBody.metadata.name,
+        profile_pic: parsedBody.metadata.profile_pic,
+        status: 'entered'
+      })
+
+    if (insertError) throw insertError
+
+    console.log(`✅ User ${userId} marked as 'entered'`)
+  } catch (err) {
+    console.error("❌ Failed to update participant status:", err)
+    return { error: "Database update failed" }
+  }
+}
+
     
     return { received: true } // 200 OK
 

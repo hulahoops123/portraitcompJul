@@ -1,16 +1,9 @@
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
-  if (!body?.amount) {
-    throw createError({ statusCode: 400, message: 'Amount is required.' })
-  }
-  
-  const amount = body.amount
-  const user = event.context.user // Assuming you have auth middleware setting this
-  const competitionId = 'default' // Or pass this in the body if you have multiple competitions
-
-  if (!user?.id) {
-    throw createError({ statusCode: 401, message: 'User authentication required.' })
-  }
+if (!body?.amount) {
+  throw createError({ statusCode: 400, message: 'Amount is required.' })
+}
+const amount = body.amount
 
   try {
     const response = await $fetch('https://payments.yoco.com/api/checkouts', {
@@ -20,17 +13,17 @@ export default defineEventHandler(async (event) => {
         'Authorization': `Bearer ${process.env.YOCO_SECRET_KEY}`,
       },
       body: JSON.stringify({
-        amount,
-        currency: 'ZAR',
-        successUrl: `${process.env.APP_URL}/stage?payment=success`,
-        cancelUrl: `${process.env.APP_URL}/stage?payment=cancel`,
-        metadata: {
-          userId: user.id,
-          competitionId: competitionId,
-          userEmail: user.email,
-          // Add any other relevant metadata
-        }
-      })
+  amount,
+  currency: 'ZAR',
+  successUrl: `${process.env.APP_URL}/stage?payment=success`,
+  cancelUrl: `${process.env.APP_URL}/stage?payment=cancel`,
+  metadata: {
+    userId: body.userId,
+    name: body.name,              // Include in POST body from client
+    profile_pic: body.profilePic  // Include in POST body from client
+  }
+})
+
     })
 
     console.log('✅ Yoco response:', response)
@@ -40,10 +33,6 @@ export default defineEventHandler(async (event) => {
     if (err.response?._data) {
       console.error('❌ Full Yoco error response:', err.response._data)
     }
-    throw createError({ 
-      statusCode: 500, 
-      message: 'Failed to create checkout',
-      data: err.response?._data || null
-    })
+    return { error: 'Failed to create checkout' }
   }
 })
