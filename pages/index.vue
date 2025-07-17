@@ -122,13 +122,13 @@ const signOut = async () => {
 }
 
 const goToStage = () => {
-  router.push('/newstage')
+  router.push('/stage')
 }
 
 // Redirect to stage if already authenticated
 watch(user, (newUser) => {
   if (newUser) {
-    router.push('/newstage')
+    router.push('/stage')
   }
 }, { immediate: true })
 </script>
