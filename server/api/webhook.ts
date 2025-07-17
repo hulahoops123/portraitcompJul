@@ -53,7 +53,38 @@ export default defineEventHandler(async (event) => {
 
     if (parsedBody.type === 'payment.succeeded') {
       console.log("✅ Payment succeeded:", parsedBody.id)
-      // Handle payment (e.g., update database)
+      
+      // Handle payment
+      const supabase = useSupabaseClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      
+      if (!user) {
+        console.warn("❌ No user associated with payment")
+        return { error: "User not found" }
+      }
+
+      // Extract metadata from payment (assuming you stored user/competition IDs in metadata)
+      const metadata = parsedBody.data.metadata || {}
+      const userId = metadata.userId || user.id
+      const competitionId = metadata.competitionId || 'default'
+
+      // Update competition status in database
+      const { error } = await supabase
+        .from('competitions')
+        .update({ 
+          status: 'entered',
+          payment_status: 'paid',
+          updated_at: new Date().toISOString()
+        })
+        .eq('user_id', userId)
+        .eq('competition_id', competitionId)
+
+      if (error) {
+        console.error("❌ Database update failed:", error)
+        return { error: "Failed to update competition status" }
+      }
+
+      console.log("✔️ User successfully entered into competition:", userId)
     }
     
     return { received: true } // 200 OK

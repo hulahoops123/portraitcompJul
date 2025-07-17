@@ -95,22 +95,6 @@ const waitingParticipantsWithSelf = computed(() => {
   return existing
 })
 
-const showSuccess = () => {
-  console.log("✅ Clicked success toast")
-  toast.success({
-    title: "Success!",
-    message: "Success toast works!"
-  })
-}
-
-const showError = () => {
-  console.log("❌ Clicked error toast")
-  toast.error({
-    title: "Error",
-    message: "Error toast works!"
-  })
-}
-
 const ENTRY_FEE_CENTS = 200  // dev_test
 
 const enterStage = async () => {

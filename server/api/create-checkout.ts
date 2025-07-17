@@ -1,9 +1,16 @@
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
-if (!body?.amount) {
-  throw createError({ statusCode: 400, message: 'Amount is required.' })
-}
-const amount = body.amount
+  if (!body?.amount) {
+    throw createError({ statusCode: 400, message: 'Amount is required.' })
+  }
+  
+  const amount = body.amount
+  const user = event.context.user // Assuming you have auth middleware setting this
+  const competitionId = 'default' // Or pass this in the body if you have multiple competitions
+
+  if (!user?.id) {
+    throw createError({ statusCode: 401, message: 'User authentication required.' })
+  }
 
   try {
     const response = await $fetch('https://payments.yoco.com/api/checkouts', {
@@ -16,7 +23,13 @@ const amount = body.amount
         amount,
         currency: 'ZAR',
         successUrl: `${process.env.APP_URL}/stage?payment=success`,
-        cancelUrl: `${process.env.APP_URL}/stage?payment=cancel`
+        cancelUrl: `${process.env.APP_URL}/stage?payment=cancel`,
+        metadata: {
+          userId: user.id,
+          competitionId: competitionId,
+          userEmail: user.email,
+          // Add any other relevant metadata
+        }
       })
     })
 
@@ -27,6 +40,10 @@ const amount = body.amount
     if (err.response?._data) {
       console.error('❌ Full Yoco error response:', err.response._data)
     }
-    return { error: 'Failed to create checkout' }
+    throw createError({ 
+      statusCode: 500, 
+      message: 'Failed to create checkout',
+      data: err.response?._data || null
+    })
   }
 })
