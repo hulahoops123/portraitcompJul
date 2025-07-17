@@ -63,16 +63,32 @@ export default defineEventHandler(async (event) => {
       const checkoutId = parsedBody.id
 
       // Find the user whose status is 'pending:{checkoutId}'
-      const { data: pending } = await supabase
+      const { data: pending, error: lookupError } = await supabase
         .from('competition_participants')
         .select('*')
         .like('status', `pending:${checkoutId}`)
-        .single()
+        .maybeSingle()
 
+      if (lookupError) {
+        console.error("❌ DB lookup error:", lookupError)
+      }
       if (!pending) {
-        console.error("❌ No user found with matching pending status")
+        console.error("❌ No user found with matching pending status for checkout:", checkoutId)
+
+        // Print ALL rows to see what’s going on
+        const { data: allStatuses, error: dumpError } = await supabase
+          .from('competition_participants')
+          .select('user_id, status, name, profile_pic')
+
+        if (dumpError) {
+          console.error("❌ Failed to dump table:", dumpError)
+        } else {
+          console.log("🧾 Full competition_participants table dump:", allStatuses)
+        }
+
         return { error: "No match for checkout ID" }
       }
+
 
       // Update user to 'entered'
       const { error: updateError } = await supabase
