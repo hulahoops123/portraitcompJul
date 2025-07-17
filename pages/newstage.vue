@@ -80,39 +80,29 @@ const loadParticipants = async () => {
 }
 
 onMounted(async () => {
-  // 1. Add to waiting (if needed)
-  const { data: alreadyEntered } = await supabase
+  const { data: existing } = await supabase
     .from('competition_participants')
-    .select('id')
-    .match({ user_id: user.value.id, status: 'entered' })
+    .select('status')
+    .eq('user_id', user.value.id)
     .single()
 
-  if (!alreadyEntered) {
-    const { data: alreadyWaiting } = await supabase
+  if (!existing || (existing.status !== 'entered' && !existing.status.startsWith('pending:'))) {
+    const { error: insertError } = await supabase
       .from('competition_participants')
-      .select('id')
-      .match({ user_id: user.value.id, status: 'waiting' })
-      .single()
+      .upsert({
+        user_id: user.value.id,
+        name: user.value.user_metadata.full_name,
+        profile_pic: user.value.user_metadata.avatar_url,
+        status: 'waiting'
+      }, { onConflict: ['user_id'] })
 
-    if (!alreadyWaiting) {
-      const { error: insertError } = await supabase
-        .from('competition_participants')
-        .insert({
-          user_id: user.value.id,
-          name: user.value.user_metadata.full_name,
-          profile_pic: user.value.user_metadata.avatar_url,
-          status: 'waiting'
-        })
-
-      if (insertError) {
-        console.error("❌ Failed to add user to waiting:", insertError)
-      } else {
-        console.log("✅ Added user to waiting list")
-      }
+    if (insertError) {
+      console.error("❌ Failed to add user to waiting:", insertError)
+    } else {
+      console.log("✅ Added user to waiting list")
     }
   }
 
-  // 2. THEN load participants
   await loadParticipants()
 })
 
