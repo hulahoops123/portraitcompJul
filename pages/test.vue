@@ -98,11 +98,12 @@
   </div>
 </template>
 
+
 <script setup>
 // Auth middleware - keeps the auth requirement
-definePageMeta({
-  middleware: 'auth'
-})
+// definePageMeta({
+//   middleware: 'auth'
+// })
 
 // Configuration - customize these per competition
 const competitionTitle = ref('Annual Art Competition') // Set your competition title
@@ -135,28 +136,29 @@ const loadParticipants = async () => {
 }
 
 onMounted(async () => {
-  const { data: existing } = await supabase
-    .from('competition_participants')
-    .select('status')
-    .eq('user_id', user.value.id)
-    .single()
+    
+//   const { data: existing } = await supabase
+//     .from('competition_participants')
+//     .select('status')
+//     .eq('user_id', user.value.id)
+//     .single()
 
-  if (!existing || (existing.status !== 'entered' && !existing.status.startsWith('pending:'))) {
-    const { error: insertError } = await supabase
-      .from('competition_participants')
-      .upsert({
-        user_id: user.value.id,
-        name: user.value.user_metadata.full_name,
-        profile_pic: user.value.user_metadata.avatar_url,
-        status: 'waiting'
-      }, { onConflict: ['user_id'] })
+//   if (!existing || (existing.status !== 'entered' && !existing.status.startsWith('pending:'))) {
+//     const { error: insertError } = await supabase
+//       .from('competition_participants')
+//       .upsert({
+//         user_id: user.value.id,
+//         name: user.value.user_metadata.full_name,
+//         profile_pic: user.value.user_metadata.avatar_url,
+//         status: 'waiting'
+//       }, { onConflict: ['user_id'] })
 
-    if (insertError) {
-      console.error("❌ Failed to add user to waiting:", insertError)
-    } else {
-      console.log("✅ Added user to waiting list")
-    }
-  }
+//     if (insertError) {
+//       console.error("❌ Failed to add user to waiting:", insertError)
+//     } else {
+//       console.log("✅ Added user to waiting list")
+//     }
+//   }
 
   await loadParticipants()
 })
@@ -236,6 +238,7 @@ const signOut = async () => {
 }
 
 </script>
+
 <style>
 .background {
   overflow: hidden;
