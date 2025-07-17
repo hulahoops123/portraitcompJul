@@ -59,6 +59,8 @@ export default defineEventHandler(async (event) => {
 
     if (parsedBody.type === 'payment.succeeded') {
       console.log("✅ Payment succeeded:", parsedBody.id)
+      console.log("📦 Full webhook body:", JSON.stringify(parsedBody, null, 2))
+
 
       const checkoutId = parsedBody.data?.object?.metadata?.checkoutId
 
