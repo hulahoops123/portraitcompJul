@@ -56,44 +56,28 @@ export default defineEventHandler(async (event) => {
   try {
     const parsedBody = JSON.parse(body)
     console.log("📡 Valid Yoco webhook:", parsedBody.type)
+    console.log("📦 Full webhook body:", parsedBody)
 
     if (parsedBody.type === 'payment.succeeded') {
-      console.log("✅ Payment succeeded:", parsedBody.id)
-      console.log("📦 Full webhook body:", JSON.stringify(parsedBody, null, 2))
+      const checkoutId = parsedBody?.payload?.metadata?.checkoutId
+      console.log("🔍 Extracted checkoutId:", checkoutId)
 
+      if (!checkoutId) {
+        console.error("❌ checkoutId missing in webhook payload")
+        return { error: "checkoutId not found" }
+      }
 
-      const checkoutId = parsedBody.data?.object?.metadata?.checkoutId
-
-
-      // Find the user whose status is 'pending:{checkoutId}'
-      const { data: pending, error: lookupError } = await supabase
+      const { data: pending } = await supabase
         .from('competition_participants')
         .select('*')
         .like('status', `pending:${checkoutId}`)
-        .maybeSingle()
+        .single()
 
-      if (lookupError) {
-        console.error("❌ DB lookup error:", lookupError)
-      }
       if (!pending) {
-        console.error("❌ No user found with matching pending status for checkout:", checkoutId)
-
-        // Print ALL rows to see what’s going on
-        const { data: allStatuses, error: dumpError } = await supabase
-          .from('competition_participants')
-          .select('user_id, status, name, profile_pic')
-
-        if (dumpError) {
-          console.error("❌ Failed to dump table:", dumpError)
-        } else {
-          console.log("🧾 Full competition_participants table dump:", allStatuses)
-        }
-
+        console.error(`❌ No user found with matching pending status for checkout: ${checkoutId}`)
         return { error: "No match for checkout ID" }
       }
 
-
-      // Update user to 'entered'
       const { error: updateError } = await supabase
         .from('competition_participants')
         .update({ status: 'entered' })
