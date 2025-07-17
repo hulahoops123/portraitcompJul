@@ -79,42 +79,43 @@ const loadParticipants = async () => {
   waiting.value = waitingData?.filter(p => !entered.value.find(e => e.user_id === p.user_id)) || []
 }
 
-onMounted(loadParticipants)
-
-
 onMounted(async () => {
-  const { data: alreadyEntered, error: enteredError } = await supabase
+  // 1. Add to waiting (if needed)
+  const { data: alreadyEntered } = await supabase
     .from('competition_participants')
     .select('id')
     .match({ user_id: user.value.id, status: 'entered' })
     .single()
 
-  if (alreadyEntered) return // Don't add if already entered
+  if (!alreadyEntered) {
+    const { data: alreadyWaiting } = await supabase
+      .from('competition_participants')
+      .select('id')
+      .match({ user_id: user.value.id, status: 'waiting' })
+      .single()
 
-  const { data: alreadyWaiting, error: waitingError } = await supabase
-    .from('competition_participants')
-    .select('id')
-    .match({ user_id: user.value.id, status: 'waiting' })
-    .single()
+    if (!alreadyWaiting) {
+      const { error: insertError } = await supabase
+        .from('competition_participants')
+        .insert({
+          user_id: user.value.id,
+          name: user.value.user_metadata.full_name,
+          profile_pic: user.value.user_metadata.avatar_url,
+          status: 'waiting'
+        })
 
-  if (alreadyWaiting) return // Don't add again if already waiting
-
-  // Add user to waiting list
-  const { error: insertError } = await supabase
-    .from('competition_participants')
-    .insert({
-      user_id: user.value.id,
-      name: user.value.user_metadata.full_name,
-      profile_pic: user.value.user_metadata.avatar_url,
-      status: 'waiting'
-    })
-
-  if (insertError) {
-    console.error("❌ Failed to add user to waiting:", insertError)
-  } else {
-    console.log("✅ Added user to waiting list")
+      if (insertError) {
+        console.error("❌ Failed to add user to waiting:", insertError)
+      } else {
+        console.log("✅ Added user to waiting list")
+      }
+    }
   }
+
+  // 2. THEN load participants
+  await loadParticipants()
 })
+
 
 // Initialize store
 
