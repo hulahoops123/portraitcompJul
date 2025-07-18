@@ -55,7 +55,7 @@
       <section class="mb-6">
         <h2 class="text-xl font-semibold mb-2">📅 Date & Location</h2>
         <ul class="list-disc list-inside">
-          <li><strong>Date:</strong> Tuesday, 6 August</li>
+          <li><strong>Date:</strong> Wednesday, 6 August</li>
           <li><strong>Time:</strong> Starts 9:00 AM sharp</li>
           <li><strong>Venue:</strong> D. Donaldson Studio, above the Breakfast Room</li>
         </ul>
