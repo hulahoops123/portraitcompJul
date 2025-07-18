@@ -25,12 +25,12 @@
       <!-- Model's Card -->
       <!-- Model's Card -->
       <div class="mb-10">
-        <h2 class="text-lg font-semibold text-gray-700 mb-3">Model Name</h2>
+        <h2 class="text-lg font-semibold text-gray-700 mb-3">Just MJ</h2>
         <div class="w-full max-w-2xl rounded-lg overflow-hidden shadow-md border border-gray-200 bg-white">
-          <img src="/images/model.jpg" alt="Model" class="w-full h-52 object-cover" />
+          <img src="/images/model.jpg" alt="Model" class="w-full h-52 object-top" />
           <div class="p-3">
             <p class="text-gray-600 text-sm">
-              This is the reference model for this round.
+              He says it stands for Michael Jordan
             </p>
           </div>
         </div>
