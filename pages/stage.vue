@@ -30,7 +30,7 @@
           <img src="/images/model.jpg" alt="Model" class="w-full h-52 object-top" />
           <div class="p-3">
             <p class="text-gray-600 text-sm">
-              He says it stands for Michael Jordan
+              He says it stands for Michael Jordan 🤷‍♂️
             </p>
           </div>
         </div>

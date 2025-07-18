@@ -63,14 +63,13 @@
 
       <section class="mb-6">
         <h2 class="text-xl font-semibold mb-2">🎨 Format & Materials</h2>
-        <p>You’ll be painting from a live model with a physical disability. Sessions run for 2 hours, break for 30
-          minutes, then resume for another 2 hours.</p>
+        <p>The model has a physical disability. Be thoughtful. Sessions are 2 hours, with a 30-minute break between.</p>
         <p class="mt-2 font-medium">Bring your own canvas and paints. Setup opens at 8:30 AM.</p>
       </section>
 
       <section class="mb-6">
         <h2 class="text-xl font-semibold mb-2">🏆 Judging & Prize</h2>
-        <p>Judged by <strong>D. Donaldson</strong>. The winner will receive a <strong>primed A0 canvas</strong>—ready
+        <p>Judged by <strong>Dee Donaldson</strong>. The winner will receive a <strong>primed A0 canvas</strong>—ready
           for your next big work.</p>
       </section>
 
@@ -105,7 +104,7 @@ const passwordInput = ref('')
 const passwordError = ref(false)
 
 const checkPassword = () => {
-  if (passwordInput.value.trim().toLowerCase() === 'ultramarine') {
+  if (passwordInput.value.trim().toLowerCase() === 'crimson') {
     passwordError.value = false
     curtainClicked.value = true
     setTimeout(() => {
