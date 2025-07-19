@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen p-6 bg-gray-100/10">
     <!-- Bubble Background Layer -->
-    <div class="background fixed inset-0 -z-10 pointer-events-none">
+    <div class="background fixed inset-0 -z-10 pointer-events-none bg-gray-400/50">
       <span class="ball"></span>
       <span class="ball"></span>
       <span class="ball"></span>
@@ -12,25 +12,41 @@
       <span class="ball"></span>
     </div>
 
-    <div class="max-w-5xl mx-auto flex flex-col">
+    <div class="max-w-5xl mx-auto flex flex-col font-playfair ">
       <!-- Header -->
-      <div class="flex justify-between items-center mb-8">
-        <h1 class="text-3xl font-bold text-gray-800">{{ competitionTitle }}</h1>
-        <h4 class="text-3xl font-bold text-gray-800">{{ competitionTag }}</h4>
-        <button @click="signOut" class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700">
-          Logout
-        </button>
+      <!-- Header -->
+      <div class="mb-12">
+        <div class="mb-4">
+          <h1 class="text-4xl font-semibold text-gray-800 tracking-tight font-playfair">
+            {{ competitionTitle }}
+          </h1>
+          <p class="text-base text-gray-500 italic mt-1">
+            {{ competitionTag }}
+          </p>
+        </div>
+
+        <div class="flex justify-end">
+          <button @click="signOut"
+            class="text-sm text-gray-600 bg-gray-200 border border-gray-400 px-4 py-1.5 rounded-none hover:bg-gray-100 hover:text-gray-800 transition font-light tracking-wide">
+            Logout
+          </button>
+        </div>
       </div>
 
       <!-- Model's Card -->
-      <!-- Model's Card -->
-      <div class="mb-10">
-        <h2 class="text-lg font-semibold text-gray-700 mb-3">Just MJ</h2>
-        <div class="w-full max-w-2xl rounded-lg overflow-hidden shadow-md border border-gray-200 bg-white">
-          <img src="/images/model.jpg" alt="Model" class="w-full h-52 object-cover" />
-          <div class="p-3">
-            <p class="text-gray-600 text-sm">
-              He says it stands for Michael Jordan 🤷‍♂️
+      <div class="mb-12 text-center">
+        <h2 class="text-xl font-semibold text-gray-700 tracking-tight pb-1 text-left">
+          Our Featured Model
+        </h2>
+
+        <div class="mx-auto w-full max-w-2xl overflow-hidden border border-gray-300">
+          <img src="/images/model.jpg" alt="Model" class="w-full max-h-[45vh] object-contain" />
+          <div class="pt-1 border-t border-gray-200 bg-gray-300 text-left px-4 py-2">
+            <h3 class="text-sm font-serif text-gray-800">
+              Just “MJ”
+            </h3>
+            <p class="text-xs text-gray-500 italic mt-1">
+              He says it stands for Michael Jordan
             </p>
           </div>
         </div>
@@ -38,10 +54,11 @@
 
 
       <!-- CTA Button -->
+      <!-- CTA Button -->
       <div class="text-center mb-12">
         <button @click="enterCompetition" :disabled="buttonDisabled"
-          class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 disabled:opacity-50 transition">
-          {{ buttonText }}
+          class="relative inline-flex items-center justify-center px-8 py-3 font-semibold tracking-wide text-gray-200 bg-gradient-to-br from-indigo-700/50 to-blue-700/70 shadow-md hover:shadow-lg hover:brightness-110 active:brightness-95 disabled:opacity-40 disabled:cursor-not-allowed border border-gray-800 rounded-none transition-all duration-200 ease-in-out">
+          <span class="relative z-10">{{ buttonText }}</span>
         </button>
       </div>
 
@@ -49,36 +66,43 @@
       <div class="grid grid-cols-4 gap-6 mb-12">
         <div v-for="i in maxCompetitors" :key="i" class="flex flex-col items-center relative group">
           <!-- Easel Frame -->
-          <div class="w-24 h-24 border-4 rounded-lg shadow-lg bg-white overflow-hidden z-10">
+          <div
+            class="w-24 h-24 border border-gray-800 rounded-none shadow-md bg-white overflow-hidden z-10 transition-all duration-200 group-hover:shadow-lg group-hover:brightness-105">
             <img v-if="entered[i - 1]" :src="entered[i - 1].profile_pic" alt="Contestant"
               class="w-full h-full object-cover" />
-            <div v-else class="w-full h-full flex items-center justify-center text-gray-300 text-sm">
-              Empty
+            <div v-else
+              class="w-full h-full flex items-center justify-center text-gray-400 text-sm font-medium tracking-wide">
+              Available
             </div>
           </div>
 
           <!-- Easel Stand -->
-          <div class="w-1 h-8 bg-gray-700 mt-1"></div>
-          <div class="w-10 h-1 bg-gray-700 mt-1"></div>
+          <div class="w-1 h-8 bg-gray-800 mt-1"></div>
+          <div class="w-10 h-1 bg-gray-800 mt-1"></div>
 
           <!-- Contestant Name -->
           <div v-if="entered[i - 1]"
-            class="mt-2 text-sm text-gray-700 text-center truncate whitespace-nowrap max-w-[6rem]">
+            class="mt-2 text-sm text-gray-100 text-center truncate whitespace-nowrap max-w-[6rem] bg-gradient-to-br from-indigo-700 to-blue-700 px-2 py-0.5 rounded-sm shadow">
             {{ entered[i - 1].name.split(' ')[0] }}
           </div>
         </div>
       </div>
 
       <!-- Waiting Competitors -->
-      <h2 class="text-xl font-semibold mb-4 text-gray-600 text-center">Still Deciding</h2>
+      <h2 class="text-xl font-semibold mb-4 text-gray-800 tracking-wide">
+        Still Deciding
+      </h2>
+
       <div class="grid grid-cols-6 gap-4">
         <div v-for="user in waiting" :key="user.user_id"
-          class="flex flex-col items-center opacity-60 hover:opacity-100 transition">
-          <div class="w-14 h-14 rounded-full overflow-hidden border border-gray-300 grayscale">
+          class="flex flex-col items-center opacity-60 hover:opacity-100 transition-all duration-200 ease-in-out group">
+          <div
+            class="w-14 h-14 rounded-full overflow-hidden border border-gray-700 shadow-sm grayscale group-hover:grayscale-0 group-hover:shadow-md">
             <img :src="user.profile_pic" alt="Waiting" class="w-full h-full object-cover" />
           </div>
         </div>
       </div>
+
     </div>
   </div>
 </template>

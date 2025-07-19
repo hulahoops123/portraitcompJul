@@ -11,6 +11,20 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     'nuxt-toast'
   ],
+fonts: {
+  families: [
+    {
+      name: 'Playfair Display',
+      provider: 'google',
+      weights: [400, 600],
+    },
+    {
+      name: 'Raleway',
+      provider: 'google',
+      weights: [400, 700],
+    }
+  ]
+},
   supabase: {
     redirect: false
   },
