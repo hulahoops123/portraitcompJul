@@ -25,7 +25,7 @@
 
       <p class="text-gray-700 mb-4">Please enter the password to continue</p>
 
-      <input v-model="passwordInput" type="input" placeholder="Enter password"
+      <input v-model.trim="passwordInput" type="text" placeholder="Enter password"
         class="w-full p-2 border border-gray-400 bg-white text-gray-800 placeholder-gray-400 shadow-sm focus:outline-none focus:ring focus:ring-indigo-300 rounded-none transition" />
 
       <button @click="checkPassword"
