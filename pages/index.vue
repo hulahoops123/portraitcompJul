@@ -85,20 +85,6 @@
         </div>
       </div>
 
-      <!-- Waiting Competitors -->
-      <h2 class="text-xl font-semibold mb-4 text-gray-800 tracking-wide">
-        Still Deciding
-      </h2>
-
-      <div class="grid grid-cols-6 gap-4">
-        <div v-for="user in waiting" :key="user.user_id"
-          class="flex flex-col items-center opacity-60 hover:opacity-100 transition-all duration-200 ease-in-out group">
-          <div
-            class="w-14 h-14 rounded-full overflow-hidden border border-gray-700 shadow-sm grayscale group-hover:grayscale-0 group-hover:shadow-md">
-            <img :src="user.profile_pic" alt="Waiting" class="w-full h-full object-cover" />
-          </div>
-        </div>
-      </div>
 
     </div>
   </div>
