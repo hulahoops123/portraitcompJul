@@ -15,74 +15,62 @@
     </div>
 
     <!-- Curtain Gate -->
-    <div v-if="showCurtain" class="rnOuter" :class="{ clicked: curtainClicked }">
-<section class="aoTable">
-  <div class="aoTableCell text-center px-4">
-    <div class="bg-white/70 backdrop-blur-md p-6 border border-gray-300 shadow-md font-playfair max-w-md mx-auto">
-      <h1 class="text-2xl font-semibold text-gray-800 tracking-tight mb-3">
-        Apologies, this is a private event.
-      </h1>
 
-      <p class="text-gray-700 mb-4">Please enter the password to continue</p>
+    <!-- Auth UI -->
+    <div 
+      class="relative z-10 w-full max-w-3xl mx-auto mt-12 bg-white/50 backdrop-blur-md p-8 shadow-xl border border-gray-300 font-playfair">
 
-      <input v-model.trim="passwordInput" type="text" placeholder="Enter password"
-        class="w-full p-2 border border-gray-400 bg-white text-gray-800 placeholder-gray-400 shadow-sm focus:outline-none focus:ring focus:ring-indigo-300 rounded-none transition" />
+     <h1 class="text-4xl font-semibold text-gray-800 text-center mb-8 tracking-tight font-playfair">
+  🎨 Portrait Competition
+</h1>
 
-      <button @click="checkPassword"
-        class="mt-4 w-40 px-4 py-2 font-semibold tracking-wide text-gray-200 bg-gradient-to-br from-indigo-700/50 to-blue-700/70 border border-gray-800 shadow-md hover:shadow-lg hover:brightness-110 active:brightness-95 disabled:opacity-40 disabled:cursor-not-allowed rounded-none transition-all duration-200 ease-in-out">
-        Submit
-      </button>
-
-      <div v-if="passwordError" class="mt-3 text-red-500 text-sm italic">
-        Incorrect password. Please try again.
-      </div>
-    </div>
-  </div>
+<section class="mb-6">
+  <h2 class="text-xl font-semibold text-gray-700 tracking-tight mb-2">🎯 Purpose</h2>
+  <p class="text-gray-800">
+    This one-day session is being held to help sustain the studio during quiet weeks—
+    and to offer paid work to a model who has few other ways to earn.
+  </p>
 </section>
 
+<section class="mb-6">
+  <h2 class="text-xl font-semibold text-gray-700 tracking-tight mb-2">🙋 Who It's For</h2>
+  <p class="text-gray-800">
+    Open to artists from the studio, drawing class, and the broader Durban art community.
+    A minimum of 6 artists is needed to go ahead. Maximum: 8 participants.
+  </p>
+</section>
 
-      <div class="rnInner">
-        <div v-for="n in 10" :key="n" class="rnUnit" :style="{ animationDelay: `-${n * 0.1}s` }" />
-      </div>
-    </div>
+<section class="mb-6">
+  <h2 class="text-xl font-semibold text-gray-700 tracking-tight mb-2">📅 Date & Location</h2>
+  <ul class="list-disc list-inside text-gray-800">
+    <li><strong>Date:</strong> Wednesday, 6 August</li>
+    <li><strong>Setup:</strong> From 8:30 AM</li>
+    <li><strong>Start Time:</strong> Painting begins at 9:00 AM sharp</li>
+    <li><strong>Venue:</strong> D. Donaldson Studio (above The Breakfast Room)</li>
+  </ul>
+</section>
 
-<!-- Auth UI -->
-<div v-show="!showCurtain"
-  class="relative z-10 w-full max-w-3xl mx-auto mt-12 bg-white/50 backdrop-blur-md p-8 shadow-xl border border-gray-300 font-playfair">
-  
-  <h1 class="text-4xl font-semibold text-gray-800 text-center mb-8 tracking-tight font-playfair">
-    🎨 Portrait Competition
-  </h1>
+<section class="mb-6">
+  <h2 class="text-xl font-semibold text-gray-700 tracking-tight mb-2">🎨 Format & Materials</h2>
+  <p class="text-gray-800">
+    The model has a physical disability. Please approach the session with sensitivity and care.
+  </p>
+  <p class="text-gray-800 mt-2">
+    There will be two painting sessions, each one hour long, with a 30-minute break in between.
+  </p>
+  <p class="mt-2 font-medium text-gray-900">Bring your own canvas and paints.</p>
+</section>
 
-  <section class="mb-6">
-    <h2 class="text-xl font-semibold text-gray-700 tracking-tight mb-2">🙋 Who It's For</h2>
-    <p class="text-gray-800">This exclusive, invitation-only event is open to artists from my studio and drawing class. Only 8
-      participants will be selected.</p>
-  </section>
+<section class="mb-6">
+  <h2 class="text-xl font-semibold text-gray-700 tracking-tight mb-2">🏆 Judging & Prize</h2>
+  <p class="text-gray-800">
+    Judged by <strong>Dee Donaldson</strong>. The winner will receive a <strong>primed A0 canvas</strong>—ready for a bold new work.
+  </p>
+</section>
 
-  <section class="mb-6">
-    <h2 class="text-xl font-semibold text-gray-700 tracking-tight mb-2">📅 Date & Location</h2>
-    <ul class="list-disc list-inside text-gray-800">
-      <li><strong>Date:</strong> Wednesday, 6 August</li>
-      <li><strong>Time:</strong> Starts 9:00 AM sharp</li>
-      <li><strong>Venue:</strong> D. Donaldson Studio, above the Breakfast Room</li>
-    </ul>
-  </section>
-
-  <section class="mb-6">
-    <h2 class="text-xl font-semibold text-gray-700 tracking-tight mb-2">🎨 Format & Materials</h2>
-    <p class="text-gray-800">The model has a physical disability. Be thoughtful. Sessions are 2 hours, with a 30-minute break between.</p>
-    <p class="mt-2 font-medium text-gray-900">Bring your own canvas and paints. Setup opens at 8:30 AM.</p>
-  </section>
-
-  <section class="mb-6">
-    <h2 class="text-xl font-semibold text-gray-700 tracking-tight mb-2">🏆 Judging & Prize</h2>
-    <p class="text-gray-800">Judged by <strong>Dee Donaldson</strong>. The winner will receive a <strong>primed A0 canvas</strong>—ready
-      for your next big work.</p>
-  </section>
-
-  <p class="italic text-sm text-gray-500 mb-8">This is a private event. If you're reading this, you're one of the
-    chosen few.</p>
+<p class="italic text-sm text-gray-500 mb-8">
+  This is a private event. If this message reached you, it means you're warmly invited to take part.
+</p>
 
 <div class="flex justify-center">
   <button @click="signInWithGoogle" :disabled="loading"
@@ -93,10 +81,11 @@
 </div>
 
 
-  <div v-if="error" class="mt-4 p-3 bg-red-100 border border-red-400 text-red-700">
-    {{ error }}
-  </div>
-</div>
+
+      <div v-if="error" class="mt-4 p-3 bg-red-100 border border-red-400 text-red-700">
+        {{ error }}
+      </div>
+    </div>
 
   </div>
 </template>
