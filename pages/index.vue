@@ -21,27 +21,27 @@
       class="relative z-10 w-full max-w-3xl mx-auto mt-12 bg-white/50 backdrop-blur-md p-8 shadow-xl border border-gray-300 font-playfair">
 
      <h1 class="text-4xl font-semibold text-gray-800 text-center mb-8 tracking-tight font-playfair">
-  🎨 Portrait Competition
+  🎨 Portrait Session & Studio Gathering
 </h1>
 
 <section class="mb-6">
-  <h2 class="text-xl font-semibold text-gray-700 tracking-tight mb-2">🎯 Purpose</h2>
+  <h2 class="text-xl font-semibold text-gray-700 tracking-tight mb-2">🎯 Why We're Doing This</h2>
   <p class="text-gray-800">
-    This one-day session is being held to help sustain the studio during quiet weeks—
-    and to offer paid work to a model who has few other ways to earn.
+    This one-day portrait session supports the studio during quieter weeks —
+    and offers meaningful paid work to a model with limited opportunities.
   </p>
 </section>
 
 <section class="mb-6">
-  <h2 class="text-xl font-semibold text-gray-700 tracking-tight mb-2">🙋 Who It's For</h2>
+  <h2 class="text-xl font-semibold text-gray-700 tracking-tight mb-2">🙋 Who Can Join</h2>
   <p class="text-gray-800">
-    Open to artists from the studio, drawing class, and the broader Durban art community.
-    A minimum of 6 artists is needed to go ahead. Maximum: 8 participants.
+    Open to artists from the studio, the drawing class, and the wider Durban art community.
+    We'll go ahead with at least 6 artists. Spaces are capped at 8.
   </p>
 </section>
 
 <section class="mb-6">
-  <h2 class="text-xl font-semibold text-gray-700 tracking-tight mb-2">📅 Date & Location</h2>
+  <h2 class="text-xl font-semibold text-gray-700 tracking-tight mb-2">📅 When & Where</h2>
   <ul class="list-disc list-inside text-gray-800">
     <li><strong>Date:</strong> Wednesday, 6 August</li>
     <li><strong>Setup:</strong> From 8:30 AM</li>
@@ -51,25 +51,25 @@
 </section>
 
 <section class="mb-6">
-  <h2 class="text-xl font-semibold text-gray-700 tracking-tight mb-2">🎨 Format & Materials</h2>
+  <h2 class="text-xl font-semibold text-gray-700 tracking-tight mb-2">🎨 Session Details</h2>
   <p class="text-gray-800">
-    The model has a physical disability. Please approach the session with sensitivity and care.
+    The model has a physical disability. Please approach the session with care and respect.
   </p>
   <p class="text-gray-800 mt-2">
-    There will be two painting sessions, each one hour long, with a 30-minute break in between.
+    We’ll paint in two one-hour sessions with a 30-minute break in between.
   </p>
   <p class="mt-2 font-medium text-gray-900">Bring your own canvas and paints.</p>
 </section>
 
 <section class="mb-6">
-  <h2 class="text-xl font-semibold text-gray-700 tracking-tight mb-2">🏆 Judging & Prize</h2>
+  <h2 class="text-xl font-semibold text-gray-700 tracking-tight mb-2">🎁 A Thank-You Gift</h2>
   <p class="text-gray-800">
-    Judged by <strong>Dee Donaldson</strong>. The winner will receive a <strong>primed A0 canvas</strong>—ready for a bold new work.
+    As a gesture of appreciation, one artist will be selected by <strong>Dee Donaldson</strong> to receive a <strong>primed A0 canvas</strong> — ready for a bold new work.
   </p>
 </section>
 
 <p class="italic text-sm text-gray-500 mb-8">
-  This is a private event. If this message reached you, it means you're warmly invited to take part.
+  This is a private event. If this message reached you, you're warmly invited to take part.
 </p>
 
 <div class="flex justify-center">
@@ -163,14 +163,27 @@ watch(user, (newUser) => {
   overflow: hidden;
   z-index: -10;
 }
+@keyframes float {
+  0% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(180deg);
+  }
+  100% {
+    transform: translateY(0px) rotate(360deg);
+  }
+}
 
 .ball {
   position: absolute;
   border-radius: 50%;
   background: radial-gradient(circle at 30% 30%, rgba(200, 216, 255, 0.8), rgba(200, 216, 255, 0.1));
-  animation: float 15s infinite ease-in-out;
+  animation: float 3s infinite ease-in-out; /* faster duration */
   opacity: 0.3;
 }
+
+
 
 .ball:nth-child(odd) {
   color: #006D5B;
