@@ -56,7 +56,7 @@
     The model has a physical disability. Please approach the session with care and respect.
   </p>
   <p class="text-gray-800 mt-2">
-    We’ll paint in two one-hour sessions with a 30-minute break in between.
+    We’ll paint in 2x two-hour sessions with a 30-minute break in between.
   </p>
   <p class="mt-2 font-medium text-gray-900">Bring your own canvas and paints.</p>
 </section>
